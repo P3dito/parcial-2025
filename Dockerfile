@@ -16,7 +16,7 @@ WORKDIR /app
 COPY --from=build-env /app/out .
 
 # Nombre de tu app compilada
-ENV APP_NET_CORE Parcial_2025_I.dll
+ENV APP_NET_CORE Parcial-2025-I.dll
 
 # Comando de inicio (Render usará $PORT automáticamente)
 CMD ASPNETCORE_URLS=http://*:$PORT dotnet $APP_NET_CORE
