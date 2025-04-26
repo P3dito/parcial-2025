@@ -1,0 +1,29 @@
+@model IEnumerable<Parcial_2025_I.Models.Jugador>
+
+<h2>Listado de Jugadores</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Edad</th>
+            <th>Posición</th>
+            <th>Equipo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var jugador in Model)
+        {
+            <tr>
+                <td>@jugador.Nombre</td>
+                <td>@jugador.Edad</td>
+                <td>@jugador.Posicion</td>
+                <td>@jugador.Equipo?.Nombre</td>
+                <td>
+                    <a href="@Url.Action("Editar", "Jugadores", new { id = jugador.Id })" class="btn btn-sm btn-primary">Editar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
