@@ -1,22 +1,22 @@
-# Imagen base de .NET SDK para compilar
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+# Imagen de build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
-EXPOSE 80
 
-# Imagen para build (compilación)
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+# Copiar el archivo csproj y restaurar dependencias
+COPY *.csproj ./
+RUN dotnet restore
 
-# Copiar csproj y restaurar dependencias
-COPY ["Parcial_2025_I.csproj", "./"]
-RUN dotnet restore "./Parcial_2025_I.csproj"
+# Copiar el resto del proyecto y compilar
+COPY . ./
+RUN dotnet publish -c Release -o out
 
-# Copiar todo el código y compilar
-COPY . .
-RUN dotnet publish "./Parcial_2025_I.csproj" -c Release -o /app/publish
-
-# Imagen final: solo el runtime
-FROM base AS final
+# Imagen de runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "Parcial_2025_I.dll"]
+COPY --from=build-env /app/out .
+
+# Nombre de tu app compilada
+ENV APP_NET_CORE Parcial_2025_I.dll
+
+# Comando de inicio (Render usará $PORT automáticamente)
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet $APP_NET_CORE
